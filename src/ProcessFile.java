@@ -117,6 +117,6 @@ public class ProcessFile {
 	private static void showUsage(){
 		System.out.println("Usage: java -jar ldif2csvexport [-options] -f filename");
 		System.out.println("\n" + "where options include:");
-		System.out.println("\t" + "-s\tseparator(default is ?)");
+		System.out.println("\t" + "-s <value>\tseparator(default is ?)");
 	}
 }
