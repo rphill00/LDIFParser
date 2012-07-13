@@ -20,6 +20,7 @@ public class ProcessFile {
 		ArrayList<String> alKeys = new ArrayList<String>();
 		String sTemp = null;
 		
+		//Create an LDIFOutput object for writing data
 		LDIFOutput oOut = new LDIFOutput();
 		
 		//Read through the contents one full time to build a
