@@ -23,8 +23,9 @@ public class ProcessFile {
 		//Create an LDIFOutput object for writing data
 		LDIFOutput oOut = new LDIFOutput();
 		
-		//Read through the contents one full time to build a
-		//list of attributes to be used as keys(key/value)
+		//Parse input parameters
+		//-f = input filename
+		//-s = separator(this input is optional)
 		if (args.length > 0){			
 			for (int i = 0; i <= (args.length) - 1;i++){
 				if (args[i].equals("-f")){
@@ -38,6 +39,8 @@ public class ProcessFile {
 			System.exit(0);
 		}
 
+		//Read through the contents one full time to build a
+		//list of attributes to be used as keys(key/value)
 		try {
 			brReader = new BufferedReader(new FileReader(fileName));
 			
