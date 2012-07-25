@@ -26,15 +26,20 @@ public class ProcessFile {
 		//Parse input parameters
 		//-f = input filename
 		//-s = separator(this input is optional)
-		if (args.length > 0){			
-			for (int i = 0; i <= (args.length) - 1;i++){
-				if (args[i].equals("-f")){
-					fileName = args[i+1];
-				}else if (args[i].equals("-s")){
-					separator = args[i+1];
+		try{
+			if (args.length > 0){			
+				for (int i = 0; i <= (args.length) - 1;i++){
+					if (args[i].equals("-f")){	
+						fileName = args[i+1];	
+					}else if (args[i].equals("-s")){
+						separator = args[i+1];
+					}
 				}
-			}
-		}else{
+			}else{
+				showUsage();
+				System.exit(0);
+			}			
+		}catch (ArrayIndexOutOfBoundsException e){
 			showUsage();
 			System.exit(0);
 		}
