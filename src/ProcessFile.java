@@ -38,6 +38,17 @@ public class ProcessFile {
 			showUsage();
 			System.exit(0);
 		}
+		
+		//Check to see if filename was passed in
+		//If yes, check to see if it exists
+		//If no, showUsage()
+		File fExists = new File(fileName);
+		
+		if (!(fExists.exists())){
+			System.out.println("File does not exist\n");
+			showUsage();
+			System.exit(0);
+		}
 
 		//Read through the contents one full time to build a
 		//list of attributes to be used as keys(key/value)
