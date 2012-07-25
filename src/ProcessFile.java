@@ -19,6 +19,7 @@ public class ProcessFile {
 		HashMap<String, String> hmData = new HashMap<String, String>();
 		ArrayList<String> alKeys = new ArrayList<String>();
 		String sTemp = null;
+		boolean bContinue = false;
 		
 		//Create an LDIFOutput object for writing data
 		LDIFOutput oOut = new LDIFOutput();
@@ -35,101 +36,113 @@ public class ProcessFile {
 						separator = args[i+1];
 					}
 				}
+				
+				bContinue = true;
 			}else{
-				showUsage();
-				System.exit(0);
+				bContinue = false;
 			}			
 		}catch (ArrayIndexOutOfBoundsException e){
-			showUsage();
-			System.exit(0);
+			System.out.println("Please review your input parameters\n");
+			bContinue = false;
+		}catch (Exception e){
+			bContinue = false;
 		}
 		
 		//Check to see if filename was passed in
 		//If yes, check to see if it exists
 		//If no, showUsage()
-		File fExists = new File(fileName);
-		
-		if (!(fExists.exists())){
-			System.out.println("File does not exist\n");
-			showUsage();
-			System.exit(0);
-		}
-
-		//Read through the contents one full time to build a
-		//list of attributes to be used as keys(key/value)
-		try {
-			brReader = new BufferedReader(new FileReader(fileName));
+		if (fileName != null){
+			File fExists = new File(fileName);
 			
-			while ((sLine = brReader.readLine()) != null){
-				if (!sLine.isEmpty()){
-					if (sLine.contains(": ")){
-						aValues = new String[2];
-						aValues = sLine.split(": ");
-						
-						if (aValues.length == 2){
-							sAttr = aValues[0].trim();
-							sValue = aValues[1].trim();
-							
-							if (alKeys.contains(sAttr) == false){
-								alKeys.add(sAttr);
-							}
-						}						
-					}
-				}
+			if (!(fExists.exists())){
+				System.out.println("File does not exist\n");
+				bContinue = false;
 			}
-			
-			//Output the header line
-			oOut.PrintOutput(alKeys);		
-			brReader.close();
-
-			//Once here, input file has been parsed for all attribute options
-			//Open the file again for reading and output
-			brReader = new BufferedReader(new FileReader(fileName));
-			
-			while ((sLine = brReader.readLine()) != null){
-				if (!sLine.isEmpty()){
-					if (sLine.contains(": ")){
-						aValues = new String[2];
-						aValues = sLine.split(": ");
-						if (aValues.length == 2){
-							sAttr = aValues[0].trim();
-							sValue = aValues[1].trim();
+		}else{
+			System.out.println("Please provide a filename\n");
+			bContinue = false;
+		}
+		
+		if (bContinue){
+			//Read through the contents one full time to build a
+			//list of attributes to be used as keys(key/value)
+			try {
+				brReader = new BufferedReader(new FileReader(fileName));
+				
+				while ((sLine = brReader.readLine()) != null){
+					if (!sLine.isEmpty()){
+						if (sLine.contains(": ")){
+							aValues = new String[2];
+							aValues = sLine.split(": ");
 							
-							if (hmData.containsKey(sAttr)){
-								//Get the existing value and append it
-								sTemp = hmData.get(sAttr);
-								sTemp += separator + sValue;
-								hmData.put(sAttr, sTemp);
-							}else{
-								hmData.put(sAttr,  sValue);
-							}
-							
-						}else{
-							sTemp = hmData.get(sAttr);
-							sTemp += sLine.trim();
-							hmData.put(sAttr, sTemp);
+							if (aValues.length == 2){
+								sAttr = aValues[0].trim();
+								sValue = aValues[1].trim();
+								
+								if (alKeys.contains(sAttr) == false){
+									alKeys.add(sAttr);
+								}
+							}						
 						}
 					}
-				}else{
-					//If line is empty, that means a break in records -- new user
-					//Print out what exists in the hashmap and then reset it
-					oOut.PrintOutput(alKeys, hmData);
-					
-					hmData = new HashMap<String, String>();
-				}				
-			}
-			
-			//Output the last record
-			oOut.PrintOutput(alKeys, hmData);
-			
-			//close the file
-			brReader.close();			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				}
+				
+				//Output the header line
+				oOut.PrintOutput(alKeys);		
+				brReader.close();
+
+				//Once here, input file has been parsed for all attribute options
+				//Open the file again for reading and output
+				brReader = new BufferedReader(new FileReader(fileName));
+				
+				while ((sLine = brReader.readLine()) != null){
+					if (!sLine.isEmpty()){
+						if (sLine.contains(": ")){
+							aValues = new String[2];
+							aValues = sLine.split(": ");
+							if (aValues.length == 2){
+								sAttr = aValues[0].trim();
+								sValue = aValues[1].trim();
+								
+								if (hmData.containsKey(sAttr)){
+									//Get the existing value and append it
+									sTemp = hmData.get(sAttr);
+									sTemp += separator + sValue;
+									hmData.put(sAttr, sTemp);
+								}else{
+									hmData.put(sAttr,  sValue);
+								}
+								
+							}else{
+								sTemp = hmData.get(sAttr);
+								sTemp += sLine.trim();
+								hmData.put(sAttr, sTemp);
+							}
+						}
+					}else{
+						//If line is empty, that means a break in records -- new user
+						//Print out what exists in the hashmap and then reset it
+						oOut.PrintOutput(alKeys, hmData);
+						
+						hmData = new HashMap<String, String>();
+					}				
+				}
+				
+				//Output the last record
+				oOut.PrintOutput(alKeys, hmData);
+				
+				//close the file
+				brReader.close();			
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}else{
+			showUsage();
+			System.exit(0);
 		}
 	}
 	
