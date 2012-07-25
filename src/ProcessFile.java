@@ -27,7 +27,7 @@ public class ProcessFile {
 		//-f = input filename
 		//-s = separator(this input is optional)
 		try{
-			if (args.length > 0){			
+			if (args.length > 1){			
 				for (int i = 0; i <= (args.length) - 1;i++){
 					if (args[i].equals("-f")){	
 						fileName = args[i+1];	
